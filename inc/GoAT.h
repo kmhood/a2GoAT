@@ -22,6 +22,7 @@ private:
     Bool_t 	useMesonReconstruction;
 
     Int_t 	nEventsWritten;
+
 protected:
     virtual void 	ProcessEvent();
     virtual Bool_t	Start();

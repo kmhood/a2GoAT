@@ -107,7 +107,10 @@ void	GoAT::ProcessEvent()
     if(usePeriodMacro == 1)
     {
         if(GetEventNumber() % period == 0)
-            cout << "Event: " << GetEventNumber() << "  Events Accepted: " << nEventsWritten << endl;
+        {
+            cout << "Event: " << GetEventNumber() << "  Events Accepted: " << nEventsWritten <<  endl;
+            cout << "   Percentage Done:    " << 100*(GetEventNumber())/(2759999) << "%" << endl;
+        }
     }
 
     if(SortAnalyseEvent())
