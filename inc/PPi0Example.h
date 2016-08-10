@@ -38,6 +38,10 @@ private:
 
     TH1*    tester;
 
+    TH3*    protonActive;
+    TH3*    protonActive_wc;
+    TH3*    h_divided_protonActive3D;
+
 
 protected:
     virtual Bool_t  Start();

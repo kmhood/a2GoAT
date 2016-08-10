@@ -44,6 +44,15 @@ PPi0Example::PPi0Example()
     angleSeparation->Sumw2();
 
     tester = new TH1D("test", "test", 180, 0, 10);
+
+    protonActive = new TH3D("active_proton", "active_proton", 19, -5, 185, 160, 0, 800, 10, 0, 10);
+    protonActive->Sumw2();
+
+    protonActive_wc = new TH3D("active_proton_wc", "active_proton_wc", 19, -5, 185, 160, 0, 800, 10, 0, 10);
+    protonActive_wc->Sumw2();
+
+    h_divided_protonActive3D = new TH3D("eff_Active", "eff_Active", 19, -5, 185, 160, 0, 800, 10, 0, 10);
+    h_divided_protonActive3D->Sumw2();
 }
 
 PPi0Example::~PPi0Example()
@@ -161,20 +170,26 @@ void	PPi0Example::ProcessEvent()
             TLorentzVector part = GetRootinos()->Particle(0);
             Double_t angle = TMath::RadToDeg() * part.Angle(proton_2D.Vect());
 
+            Double_t opening = TMath::RadToDeg() * proton_2D.Angle(GetRootinos()->GetUnitVector(0));
 
-           // for(Int_t i = 0; i < GetRootinos()->GetNParticles(); i++)
-            //{
+            angleSeparation->Fill(opening, GetTagger()->GetTaggedEnergy(0));
 
-                Double_t opening = TMath::RadToDeg() * proton_2D.Angle(GetRootinos()->GetUnitVector(0));
-
-                //cout << opening << endl;
-
-//opening = (TMath::RadToDeg()*missing.Angle(GetRootinos()->GetUnitVector(j)));
-
-                angleSeparation->Fill(opening, GetTagger()->GetTaggedEnergy(0));
-            //}
         }
+        //Active Target Stuff
+
+        for(Int_t i = 0; i<10; i++)
+        {
+            protonActive->Fill(proton_2D.Theta() * TMath::RadToDeg(), GetTagger()->GetTaggedEnergy(0), i);
+        }
+
+        if(GetDetectorHits()->GetNActiveHits() >= 1)
+        {
+            protonActive_wc->Fill(proton_2D.Theta() * TMath::RadToDeg(), GetTagger()->GetTaggedEnergy(0), GetDetectorHits()->GetNActiveHits());
+        }
+
     }
+
+
 
 }
 
@@ -193,6 +208,9 @@ Bool_t	PPi0Example::Write()
 
     h_divided_protonAng2D->Add(protonAngles2D_withCharged);
     h_divided_protonAng2D->Divide(protonAngles2D);
+
+    h_divided_protonActive3D->Add(protonActive_wc);
+    h_divided_protonActive3D->Divide(protonActive);
 
  // ------- End of Kalli's stuff -------------------------------------------------------
 
